@@ -1,0 +1,3 @@
+[submodule "apps/frobots_scenic"]
+	path = apps/frobots_scenic
+	url = git@github.com:Bittoku/frobots_scenic.git
