@@ -36,7 +36,6 @@ defmodule Frobots.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix_pubsub, "~> 2.0"}
     ]
   end
 

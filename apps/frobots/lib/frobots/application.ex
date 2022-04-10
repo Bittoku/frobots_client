@@ -8,8 +8,6 @@ defmodule Frobots.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Frobots.PubSub}
       # Start a worker by calling: Frobots.Worker.start_link(arg)
       # {Frobots.Worker, arg}
     ]
