@@ -36,6 +36,8 @@ defmodule Frobots.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:phoenix_client, "~> 0.3"},
+      {:jason, "~> 1.0"}
     ]
   end
 

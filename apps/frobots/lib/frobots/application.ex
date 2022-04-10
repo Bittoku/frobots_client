@@ -7,9 +7,11 @@ defmodule Frobots.Application do
 
   @impl true
   def start(_type, _args) do
+    socket_opts =
+      Application.get_env(:phoenix_client, :socket)
+
     children = [
-      # Start a worker by calling: Frobots.Worker.start_link(arg)
-      # {Frobots.Worker, arg}
+      {PhoenixClient.Socket, {socket_opts, name: PhoenixClient.Socket}}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Frobots.Supervisor)

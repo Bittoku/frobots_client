@@ -9,11 +9,16 @@
 # move said applications out of the umbrella.
 import Config
 
+config :phoenix_client,
+socket: [
+  url: "ws://localhost:4000/socket/websocket"
+]
+
 # Configure the main viewport for the Scenic application
 config :frobots_scenic, :viewport, %{
   name: :main_viewport,
   size: {1000, 1000},
-  default_scene: {FrobotsScenic.Scene.Start, nil},
+  default_scene: {FrobotsScenic.Scene.Web.Start, nil},
   drivers: [
     %{
       module: Scenic.Driver.Glfw,
