@@ -10,15 +10,17 @@
 import Config
 
 config :phoenix_client,
-socket: [
-  url: "ws://localhost:4000/socket/websocket"
-]
+  socket: [
+    url: "ws://localhost:4000/socket/websocket"
+  ]
+
+config :frobots, display_process_name: :arena_gui
 
 # Configure the main viewport for the Scenic application
 config :frobots_scenic, :viewport, %{
   name: :main_viewport,
   size: {1000, 1000},
-  default_scene: {FrobotsScenic.Scene.Web.Start, nil},
+  default_scene: {FrobotsScenic.Scene.Start, FrobotsScenic.Scene.Game},
   drivers: [
     %{
       module: Scenic.Driver.Glfw,
@@ -32,7 +34,6 @@ config :frobots_scenic, :viewport, %{
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
