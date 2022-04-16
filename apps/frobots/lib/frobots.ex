@@ -10,6 +10,8 @@ defmodule Frobots do
   @priv_dir "#{:code.priv_dir(@app)}"
   @templates_dir "templates"
 
+  alias Frobots.ClientAdapter
+
   @frobot_paths %{
     rabbit: Path.join([@priv_dir, @templates_dir, "rabbit.lua"]),
     sniper: Path.join([@priv_dir, @templates_dir, "sniper.lua"]),
@@ -35,5 +37,11 @@ defmodule Frobots do
 
   def frobot_types() do
     @frobot_types
+  end
+
+  def start_frobots(frobots) do
+    # return a frobots_map {name:frobot object_data}, but setup the channel adapter
+    {:ok, frobots_map} = ClientAdapter.start(ClientAdapter, frobots)
+    frobots_map
   end
 end
