@@ -31,6 +31,14 @@ defmodule Frobots.ClientAdapter do
     )
   end
 
+  def maybe_send_to_gui(msg) do
+    # send the event message to the gui if one is registered
+    case :global.whereis_name(Application.get_env(:frobots, :display_process_name)) do
+      :undefined -> nil
+      gui_pid -> send(gui_pid, msg)
+    end
+  end
+
   @impl true
   def init(opts) do
     id = Keyword.fetch!(opts, :match_id)
@@ -53,12 +61,7 @@ defmodule Frobots.ClientAdapter do
   def handle_call({:start_frobots, frobots}, _from, state) do
     {:ok, frobots_map} = Channel.push(state.channel, "start_match", frobots)
 
-    gui_pid = :global.whereis_name(Application.get_env(:frobots, :display_process_name))
-
-    state =
-      state
-      |> Map.put(:frobots_map, frobots_map)
-      |> Map.put(:gui_pid, gui_pid)
+    state = Map.put(state, :frobots_map, frobots_map)
 
     {:reply, {:ok, frobots_map}, state}
   end
@@ -66,7 +69,7 @@ defmodule Frobots.ClientAdapter do
   @impl true
   def handle_info(%Message{event: "arena_event", payload: payload}, state) do
     IO.puts("Incoming Message: #{inspect(payload)}")
-    send(state.gui_pid, decode_event(payload))
+    maybe_send_to_gui(decode_event(payload))
     {:noreply, state}
   end
 
