@@ -21,3 +21,7 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 frobots-*.tar
+
+# Ignore local lua frobots written by user
+priv/bots/*.lua
+
