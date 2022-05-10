@@ -37,7 +37,10 @@ defmodule Frobots.MixProject do
   defp deps do
     [
       {:phoenix_client, "~> 0.3"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.17"},
+      {:con_cache, "~> 1.0"}
     ]
   end
 

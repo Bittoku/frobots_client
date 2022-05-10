@@ -1,4 +1,4 @@
-defmodule Frobots.ClientAdapter do
+defmodule Frobots.MatchChannelAdapter do
   @moduledoc false
   use GenServer
   alias PhoenixClient.{Socket, Channel, Message}
@@ -46,8 +46,7 @@ defmodule Frobots.ClientAdapter do
     {:ok, socket} = Socket.start_link(socket_opts)
     wait_for_socket(socket)
 
-    {:ok, _response, channel} =
-      Channel.join(socket, "arena:" <> Integer.to_string(id))
+    {:ok, _response, channel} = Channel.join(socket, "arena:" <> Integer.to_string(id))
 
     {:ok,
      %{

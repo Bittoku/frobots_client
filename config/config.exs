@@ -12,6 +12,9 @@ import Config
 config :phoenix_client,
   socket: [
     url: "ws://localhost:4000/socket/websocket"
+  ],
+  api: [
+    url: "localhost:4000/api/v1"
   ]
 
 config :frobots, display_process_name: :arena_gui
