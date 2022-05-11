@@ -8,21 +8,24 @@ defmodule Frobots do
   """
   @app :frobots
   @priv_dir "#{:code.priv_dir(@app)}"
-  @templates_dir "templates"
   @bots_dir "bots"
 
   alias Frobots.ApiClient
   alias Frobots.MatchChannelAdapter
+  @doc """
+    @frobot_types [
+      {"Rabbit", :rabbit},
+      {"Sniper", :sniper},
+      {"Random", :random},
+      {"Rook", :rook},
+      {"Tracker", :tracker},
+      {"Target", :target},
+      {"Dummy", :dummy}
+    ]
 
-  @frobot_types [
-    {"Rabbit", :rabbit},
-    {"Sniper", :sniper},
-    {"Random", :random},
-    {"Rook", :rook},
-    {"Tracker", :tracker},
-    {"Target", :target},
-    {"Dummy", :dummy}
-  ]
+
+  """
+
 
   def user_frobot_path() do
     Path.join([@priv_dir, @bots_dir])
@@ -43,8 +46,8 @@ defmodule Frobots do
     frobots_map
   end
 
-  # these update functions scan the local priv/bots directory and will save these frobots to the server
-  def load_player_frobot(name) do
+  # this loads the frobots from server and saves them to the directory
+  def load_player_frobots() do
     frobots = ApiClient.get_user_frobots()
     Enum.each(frobots, fn f ->
       ConCache.put(:frobots, f["name"], f["id"])
@@ -52,12 +55,8 @@ defmodule Frobots do
     end)
   end
 
-  # this loads the frobots from server and saves them to the directory
-  def load_player_frobots() do
-    Enum.each(ApiClient.get_user_frobots(), fn name -> load_player_frobot(name) end)
-  end
-
+  # the following with read all the frobots in the local directory and upload them to the server.
   def save_player_frobots() do
-    ApiClient.upload_all_frobots()
+    ApiClient.upload_user_frobots()
   end
 end

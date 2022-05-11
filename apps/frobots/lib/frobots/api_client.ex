@@ -4,8 +4,7 @@ defmodule Frobots.ApiClient do
   plug(Tesla.Middleware.BaseUrl, "http://localhost:4000/api/v1")
   # generated this token from the server using jerry@frobots.io username.
   plug(Tesla.Middleware.BearerAuth,
-    token:
-      "SFMyNTY.g2gDbQAAABBqZXJyeUBmcm9ib3RzLmlvbgYAg-hyg4ABYgABUYA.A5jm9YC4dAJA1hZg6xrEZ05i9OktSOruVZ7mdvrjQ8Q"
+    token: Application.get_env(:frobots_client, :bearer_token)
   )
 
   plug(Tesla.Middleware.JSON)
@@ -58,7 +57,7 @@ defmodule Frobots.ApiClient do
     end
   end
 
-  def upload_all_frobots() do
+  def upload_user_frobots() do
     with {:ok, files} <- File.ls(@user_frobot_path),
          list <- Enum.filter(files, fn x -> String.contains?(x, ".lua") end) do
       Enum.map(list, &create_or_update_frobot/1)
