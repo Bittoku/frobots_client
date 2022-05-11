@@ -38,8 +38,8 @@ which will create the priv/bots directory and write all your frobots into that d
 You can then exit this iex session and run the FUBARs client.
 ```shell
 iex(2)> CTRL-C CTRL-C
-cd ../..
-iex -S mix
+frobots_client/apps/frobots$ cd ../..
+frobots_client$ iex -S mix
 ```
 Which will run the Frobots_Scenic client.
 
