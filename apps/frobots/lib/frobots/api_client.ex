@@ -4,7 +4,7 @@ defmodule Frobots.ApiClient do
   plug(Tesla.Middleware.BaseUrl, "http://localhost:4000/api/v1")
   # generated this token from the server using jerry@frobots.io username.
   plug(Tesla.Middleware.BearerAuth,
-    token: Application.get_env(:frobots_client, :bearer_token)
+    token: Application.get_env(:frobots, :bearer_token)
   )
 
   plug(Tesla.Middleware.JSON)
@@ -27,9 +27,7 @@ defmodule Frobots.ApiClient do
   def get_template_frobots() do
     case get("/frobots/templates") do
       {:ok, %Tesla.Env{body: %{"data" => frobot_list}}} ->
-        Enum.map(Enum.filter(frobot_list, fn frobot -> frobot["class"] == "nulla" end), fn frobot ->
-          frobot
-        end)
+        Enum.map(frobot_list, fn frobot -> frobot end)
 
       {:error, error} ->
         [error]

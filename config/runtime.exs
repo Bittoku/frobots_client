@@ -1,6 +1,6 @@
 import Config
 
-config :frobots_client, bearer_token: System.get_env("CLIENT_TOKEN")
+config :frobots, bearer_token: System.get_env("CLIENT_TOKEN")
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
