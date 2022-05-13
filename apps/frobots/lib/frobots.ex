@@ -57,6 +57,11 @@ defmodule Frobots do
 
   # the following with read all the frobots in the local directory and upload them to the server.
   def save_player_frobots() do
+    # first load all the frobots, so that we don't create duplicates
+    frobots = ApiClient.get_user_frobots()
+    Enum.each(frobots, fn f ->
+      ConCache.put(:frobots, f["name"], f["id"])
+    end)
     ApiClient.upload_user_frobots()
   end
 end
