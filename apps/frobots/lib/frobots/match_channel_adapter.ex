@@ -13,8 +13,12 @@ defmodule Frobots.MatchChannelAdapter do
     end
   end
 
-  def start(server, frobots) do
-    GenServer.call(server, {:start_frobots, frobots})
+  def request_match(server) do
+    GenServer.call(server, {:request_match})
+  end
+
+  def start_match(server, frobots) do
+    GenServer.call(server, {:start_match, frobots})
   end
 
   defp nested_list_to_tuple(list) when is_list(list) do
@@ -40,29 +44,40 @@ defmodule Frobots.MatchChannelAdapter do
   end
 
   @impl true
-  def init(opts) do
-    id = Keyword.fetch!(opts, :match_id)
+  def init(_opts) do
+    # id = Keyword.fetch!(opts, :match_id)
     socket_opts = Application.get_env(:phoenix_client, :socket)
     {:ok, socket} = Socket.start_link(socket_opts)
     wait_for_socket(socket)
 
-    {:ok, _response, channel} = Channel.join(socket, "arena:" <> Integer.to_string(id))
+    {:ok, _response, lobby_channel} = Channel.join(socket, "arena:lobby")
 
     {:ok,
      %{
        socket: socket,
-       channel: channel,
-       match_id: id
+       lobby_channel: lobby_channel,
+       match_channel: nil,
+       match_id: nil
      }}
   end
 
   @impl true
-  def handle_call({:start_frobots, frobots}, _from, state) do
-    {:ok, frobots_map} = Channel.push(state.channel, "start_match", frobots)
+  def handle_call({:start_match, frobots}, _from, state) do
+    {:ok, frobots_map} = Channel.push(state.match_channel, "start_match", frobots)
+    {:reply, {:ok, frobots_map}, Map.put(state, :frobots_map, frobots_map)}
+  end
 
-    state = Map.put(state, :frobots_map, frobots_map)
+  @impl true
+  def handle_call({:request_match}, _from, state) do
+    {:ok, match_id} = Channel.push(state.lobby_channel, "request_match", "client_username")
 
-    {:reply, {:ok, frobots_map}, state}
+    {:ok, _response, match_channel} =
+      Channel.join(state.socket, "arena:" <> Integer.to_string(match_id))
+
+    wait_for_socket(state.socket)
+
+    {:reply, {:ok, match_id},
+     state |> Map.put(:match_id, match_id) |> Map.put(:match_channel, match_channel)}
   end
 
   @impl true

@@ -12,6 +12,7 @@ defmodule Frobots do
 
   alias Frobots.ApiClient
   alias Frobots.MatchChannelAdapter
+
   @doc """
     @frobot_types [
       {"Rabbit", :rabbit},
@@ -26,7 +27,6 @@ defmodule Frobots do
 
   """
 
-
   def user_frobot_path() do
     Path.join([@priv_dir, @bots_dir])
   end
@@ -36,19 +36,23 @@ defmodule Frobots do
   end
 
   def frobot_types() do
-    frobot_list = frobot_names( ApiClient.get_user_frobots() ++ ApiClient.get_template_frobots())
+    frobot_list = frobot_names(ApiClient.get_user_frobots() ++ ApiClient.get_template_frobots())
     Enum.map(frobot_list, fn x -> {x, String.to_atom(x)} end)
   end
 
   def start_frobots(frobots) do
     # return a frobots_map {name:frobot object_data}, but setup the channel adapter
-    {:ok, frobots_map} = MatchChannelAdapter.start(MatchChannelAdapter, frobots)
-    frobots_map
+    MatchChannelAdapter.start_match(MatchChannelAdapter, frobots)
+  end
+
+  def request_match() do
+    MatchChannelAdapter.request_match(MatchChannelAdapter)
   end
 
   # this loads the frobots from server and saves them to the directory
   def load_player_frobots() do
     frobots = ApiClient.get_user_frobots()
+
     Enum.each(frobots, fn f ->
       ConCache.put(:frobots, f["name"], f["id"])
       File.write(~s|#{user_frobot_path()}/#{f["name"]}.lua|, f["brain_code"])
@@ -59,9 +63,11 @@ defmodule Frobots do
   def save_player_frobots() do
     # first load all the frobots, so that we don't create duplicates
     frobots = ApiClient.get_user_frobots()
+
     Enum.each(frobots, fn f ->
       ConCache.put(:frobots, f["name"], f["id"])
     end)
+
     ApiClient.upload_user_frobots()
   end
 end
