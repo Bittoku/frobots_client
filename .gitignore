@@ -22,8 +22,12 @@ erl_crash.dump
 # Temporary files, for example, from tests.
 /tmp
 
+# IDE
 .idea/
 *.iml
+
+#file system
+.DS_Store
 
 # local env vars
 .env
