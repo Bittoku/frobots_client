@@ -7,7 +7,8 @@ defmodule Frobots.Umbrella.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      releases: releases()
     ]
   end
 
@@ -42,6 +43,15 @@ defmodule Frobots.Umbrella.MixProject do
       setup: ["cmd mix setup"],
       go: ["cmd source ../../.env ; mix run"],
       test_path: ["cmd pwd"]
+    ]
+  end
+
+  defp releases do
+    [
+      frobots: [
+        version: "0.1.0",
+        applications: [frobots_scenic: :permanent, frobots: :permanent],
+      ]
     ]
   end
 end

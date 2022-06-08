@@ -25,27 +25,23 @@ export CLIENT_TOKEN="SFMyNTY.g2gDbQAAAB...."
 ```shell
 frobots_backend$ iex -S mix phx.server
 ```
-5. Setup the bots local directory or load up any frobots you already created from the db
-```shell
-frobots_client$ cd apps/frobots
-frobots_client/apps/frobots$ iex -S mix
-```
-Then you have to manuall call this function
-```shell
-iex(1)> Frobots.load_player_frobots()
-```
-which will create the priv/bots directory and write all your frobots into that directory.
-You can then exit this iex session and run the FUBARs client.
-```shell
-iex(2)> CTRL-C CTRL-C
-frobots_client/apps/frobots$ cd ../..
-frobots_client$ iex -S mix
-```
-Which will run the Frobots_Scenic client.
 
-When you are done editing your frobots and want to save them back to the db, in an iex session run this command
+5. Built a release binary for the Client
+
 ```shell
-iex(1)> Frobots.save_player_frobots()
+frobots_client$ MIX_ENV=prod mix release 
 ```
-Which will read all .lua files in your bots directory, and write them to the db.  You should be aware that this will 
+Which will build the Frobots client. Instructions will follow on how to run the binary
+
+6. Start the Client
+```shell
+_build/dev/rel/frobots/bin/frobots start
+```
+There will be a "Download" button on the GUI, which will read all .lua files in your bots directory, and write them to 
+the db.  You 
+should be aware 
+that this will 
 update any frobots in the db with the same name.
+
+frobots are downloaded into your 
+`_build/<MIX_ENV>/lib/frobots/priv/[bots|templates]` directory.
