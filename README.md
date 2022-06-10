@@ -43,7 +43,7 @@ _build/dev/rel/frobots_client/bin/frobots_client start
 ```
 or if you unzipped it
 ```shell
-frobots_client-rel/bin/frobots_client start
+frobots_client-0.1.0/bin/frobots_client start
 ```
 There will be a "Download" button on the GUI, which will read all .lua files in your bots directory, and write them to 
 the db.  You 
