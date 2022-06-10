@@ -14,20 +14,35 @@ return function(state, ...)
     state = state or {}
     math.randomseed( os.time() )
     state.type = "tracker"
+    local panic_level = 30
+
+    local function run_away(direction)
+        local damage = damage()
+        if direction == nil then
+            direction = state.angle + 180
+        end
+
+        if state.d ~= damage then
+            state.status = "running"
+            state.d = damage
+            state.panic = panic_level
+            drive(direction, 100)
+            return true
+        end
+        return false
+    end
 
     if state.status == nil then
         state.status = "scanning"
+        -- set up the variables
         state.res = 1
         state.d = damage()
         state.counter = 1
+        -- pick a random direction to scan
         state.angle = math.random(360)
         return state
     elseif state.status == "scanning" then
-        if state.d ~= damage() then
-            state.status = "running"
-            state.d = damage()
-            state.panic = 30
-            drive(state.angle + 180, 100)
+        if run_away() then
             return state
         end
         state.range = scan(state.angle, state.res)
@@ -38,54 +53,36 @@ return function(state, ...)
             until os.execute("sleep " .. tonumber(10))
             drive( state.angle, 0)
             state.angle = state.angle - 3
-            if state.d ~= damage() then
-                state.status = "running"
-                state.d = damage()
-                state.panic = 30
-                drive(state.angle + 180, 100)
+            if run_away() then
                 return state
             end
         elseif state.range <= 700 and state.range > 0 then
-
             repeat
                 fired = cannon( state.angle, state.range )
             until fired == false
             state.angle = state.angle - 15
-            if state.d ~= damage() then
-                state.status = "running"
-                state.d = damage()
-                state.panic = 30
-                drive(state.angle + 180, 100)
+            if run_away() then
                 return state
             end
             state.status = "tracking"
-            return state
         else
-            if state.d ~= damage() then
-                state.status = "running"
-                state.d = damage()
-                state.panic = 30
-                drive(state.angle + 180, 100)
-                return state
-            end
             state.angle = state.angle + state.res
             state.angle = state.angle % 360
-            return state
         end
     elseif state.status == "tracking" then
         state.x = loc_x()
         state.y = loc_y()
         local i = 0
-        if state.last_dir == 0 then
+        if state.last_dir == nil or state.last_dir == false then
             if state.y > 512 then
-                state.last_dir = 1
+                state.last_dir = true
                 drive(270, 100)
                 repeat
                     i = i + 1
                 until state.y - 100 >= loc_y() or i >= 100
                 drive(270, 0)
             else
-                state.last_dir = 1
+                state.last_dir = true
                 drive(90, 100)
                 repeat
                     i = i + 1
@@ -93,16 +90,15 @@ return function(state, ...)
                 drive(90, 0)
             end
         else
-
             if state.x >= 512 then
-                state.last_dir = 0
+                state.last_dir = false
                 drive(180,100)
                 repeat
                     i = i + 1
                 until state.x - 100 >= loc_x() or i >= 100
                 drive(180,0)
             else
-                state.last_dir = 0
+                state.last_dir = false
                 drive(0, 100)
                 repeat
                     i = i + 1
@@ -111,22 +107,17 @@ return function(state, ...)
                 drive( 0,0 )
             end
         end
-        if state.d ~= damage() then
-            state.status = "running"
-            state.d = damage()
-            state.panic = 30
-            drive(math.random(359), 100)
+
+        if run_away(math.random(359)) then
             return state
         end
         state.status = "scanning"
-        return state
     elseif state.status == "running" then
         state.panic = state.panic - 1
         if state.panic < 0 then
             drive(0,0) --- stop
-            state.status = nil
+        state.status = nil
         end
-        return state
     end
     return state
 end
