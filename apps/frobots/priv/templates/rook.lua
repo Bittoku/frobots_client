@@ -94,6 +94,9 @@ return function(state, ...)
     local function out_of_range(range)
        return (range == 0 or range > 700)
     end
+    local function set_rank(rank)
+        state.rank = rank
+    end
 
 
     local function init()

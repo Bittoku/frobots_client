@@ -49,7 +49,7 @@ defmodule Frobots.Umbrella.MixProject do
   defp releases do
     [
       frobots_client: [
-        version: "0.1.0",
+        version: "0.1.0-beta",
         applications: [frobots_scenic: :permanent, frobots: :permanent],
 	      include_executables_for: [:unix],
       	steps: [:assemble, :tar]
