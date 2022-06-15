@@ -25,7 +25,7 @@ defmodule Frobots.Umbrella.MixProject do
   # Dependencies listed here are available only for this project
   # and cannot be accessed from applications inside the apps/ folder.
   defp deps do
-    []
+    [{:bakeware, "~> 0.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
@@ -52,7 +52,11 @@ defmodule Frobots.Umbrella.MixProject do
         version: "0.1.1-beta",
         applications: [frobots_scenic: :permanent, frobots: :permanent],
 	      include_executables_for: [:unix],
-      	steps: [:assemble, :tar]
+      	steps: [:assemble, &Bakeware.assemble/1],
+        bakeware: [
+          compression_level: 1,
+          start_command: "daemon"
+        ]
       ]
     ]
   end
