@@ -1,57 +1,83 @@
 # Frobots Client
+The **frobots_client** repository contains the scenic elements that you need to run the FUBARs arena to develop your own Frobots locally.
 
-This is the Scenic client front end enough for you to run the FUBARs arena and develop your own frobots
-
-## To install
-
-```
-git@github.com:Bittoku/frobots_client.git
-```
-You also need to grab the backend if you plan to run your local version of the frobots backend as well.
-
-This instructions assumes you will run locally though eventually you will only be able to connect to the 
-shared backend dev server.
-
-
-
-1. Create an account on the website 
-2. Get the bearer token for API access to your account (See Users->Show)
-3. Set the env with your token
-
+# Getting Started
+## 1. Clone the repository
 ```shell
-export CLIENT_TOKEN="SFMyNTY.g2gDbQAAAB...."
+git clone git@github.com:Bittoku/frobots_client.git
 ```
-4. Start the backend (if you want to connect locally)
-```shell
-frobots_backend$ iex -S mix phx.server
-```
-5. Or just connect to the dev server, you need to give @slopyjalopi your pubkey and run a port forward
-6. `ssh -N -L 127.0.0.1:4000:127.0.0.1:4000 player@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com`
 
-7. Build a release binary for the Client
+## 2. Get a Bearer Token
+### Create an Account
+In order to get a bearer token, you need to have a Frobots account. Please contact @slopyjalopi in our Discord's #beta-group channel and give him your public SSH key.
 
-```shell
-frobots_client$ mix deps.get
-frobots_client$ MIX_ENV=prod mix release 
-```
-Which will build the Frobots client. Instructions will follow on how to run the binary
+Once your SSH keys are set up, you have to port forward to the Frobots server using the following command. (Replace the username with the account username that will be provided to you):
+```bash
+ssh -N -L 127.0.0.1:4000:127.0.0.1:4000 [username]@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com
 
-8. Or just unzip a binary for your system `https://github.com/Bittoku/frobots_client/releases`
-9. Start the Client from your build
-```shell
-_build/dev/rel/frobots_client/bin/frobots_client start
+# Note: You have to keep this process running the background to proceed with the following steps.
 ```
-or if you unzipped it
-```shell
-frobots_client-0.1.0/bin/frobots_client start
-```
-There will be a "Download" button on the GUI, which will read all .lua files in your bots directory, and write them to 
-the db.  You 
-should be aware 
-that this will 
-update any frobots in the db with the same name.
 
-frobots are downloaded into your 
-`_build/<MIX_ENV>/lib/frobots/priv/[bots|templates]` directory.
-or 
-`frobots_client-0.1.0/lib/frobots-0.1.0/priv/bots` if you are running from the archive
+After port forwarding, you can now access the development website through `http://localhost:4000/`. This will load the Frobots website on your local machine and where you can create an account.
+
+Once you have created an account, you can obtain your Bearer Token by going to **User > Show** from the homepage.
+
+# 3. Running the Server
+### Running it Locally
+1. Clone the backend repository [here](https://github.com/Bittoku/frobots_backend).
+2. Start the backend server:
+   ```bash
+   frobots_backend$ iex -S mix phx.server
+   ```
+
+### Connecting to the dev server
+1. Port forward to the dev server:
+   ```bash
+    ssh -N -L 127.0.0.1:4000:127.0.0.1:4000 [username]@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com
+    
+    # Note: You have to keep this process running the background to proceed with the following steps.
+    ```
+
+# 4. Running the Client
+### Using the Binary
+1. Download the latest release [here](https://github.com/Bittoku/frobots_client/tags]).
+2. Unzip the files and start a new terminal session in that directory.
+3. Set your token:
+    ```bash
+    export CLIENT_TOKEN="<your-bearer-token>"
+    ```
+4. Run the client:
+    ```bash
+    bin/frobots_client start
+    ```
+5. Press the **Download** button to get the template Frobots and any previously saved Frobot. These template Frobots will then be located in the `frobots_client-<release-tag>-beta/lib/frobots--<release-tag>/priv` under `bots/` and `templates/`.
+6. You can use your downloaded Frobot template Lua code as a base and create your own Frobot in the `priv/bots/` folder and name it anything you want.
+7. Upload your Frobot to the server.
+8. Restart the client to see your newly added Frobot and select it to start playing.
+
+### Building the binary locally
+
+1. Ensure you have Elixir 1.13 installed and Erlang 24, as there are some incompatibilities with 25.
+2. If you need to switch versions, install a version manager like [asdf](https://asdf-vm.com/guide/getting-started.html)
+3. Build a release binary for the client using the following command:
+   ```bash
+   frobots_client$ mix deps.get
+   
+   frobots_client$ MIX_ENV=prod mix release 
+    ```
+4. Run the binary
+    ```bash
+   _build/dev/rel/frobots_client/bin/frobots_client start
+    ```
+---
+# Troubleshooting
+1. You might need to install the libraries for the Scening to work:
+
+   For Ubuntu users:
+   ```bash
+   apt-get install pkgconf libglfw3 libglfw3-dev libglew2.1 libglew-dev
+   ```
+   For macOS users:
+   ```bash
+   brew install glfw3 glew pkg-config
+   ```

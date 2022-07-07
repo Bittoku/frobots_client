@@ -70,7 +70,7 @@ return function(state, ...)
         end
         return state
     elseif state.status == "eating" and state.wander_lust > 0 then
-        state.wander_lust = state.wander_lust -1
+        state.wander_lust = state.wander_lust - 1
         return state
     elseif (state.status == "wandering" or state.status == "eating") and state.wander_lust < 0 then
         if state.status == "wandering" then

@@ -46,7 +46,7 @@ defmodule Frobots do
     Enum.map(frobot_list, fn x -> {x, String.to_atom(x)} end)
   end
 
-  def start_frobots(frobots) do
+  def start_fubars(frobots) do
     # return a frobots_map {name:frobot object_data}, but setup the channel adapter
     MatchChannelAdapter.start_match(MatchChannelAdapter, frobots)
   end
