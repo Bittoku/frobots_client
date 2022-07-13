@@ -36,7 +36,6 @@ defmodule Frobots do
     Path.join([@priv_dir, @template_dir])
   end
 
-
   def frobot_names(frobot_list) do
     Enum.map(frobot_list, fn f -> f["name"] end)
   end
@@ -66,12 +65,14 @@ defmodule Frobots do
     end)
 
     templates = ApiClient.get_template_frobots()
-    IO.inspect Enum.each(templates, fn f ->
-      ConCache.put(:frobots, f["name"], f["id"])
-      File.mkdir_p!(template_frobot_path())
-      File.write(~s|#{template_frobot_path()}/#{f["name"]}.lua|, f["brain_code"])
-    end)
 
+    IO.inspect(
+      Enum.each(templates, fn f ->
+        ConCache.put(:frobots, f["name"], f["id"])
+        File.mkdir_p!(template_frobot_path())
+        File.write(~s|#{template_frobot_path()}/#{f["name"]}.lua|, f["brain_code"])
+      end)
+    )
   end
 
   # the following with read all the frobots in the local directory and upload them to the server.

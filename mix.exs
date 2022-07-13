@@ -1,10 +1,12 @@
 defmodule Frobots.Umbrella.MixProject do
   use Mix.Project
 
+  @version "0.1.2-beta"
+
   def project do
     [
       apps_path: "apps",
-      version: "0.1.0",
+      version: @version,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
@@ -48,15 +50,21 @@ defmodule Frobots.Umbrella.MixProject do
 
   defp releases do
     [
-      frobots_client: [
-        version: "0.1.1-beta",
+      client: [
+        version: @version,
         applications: [frobots_scenic: :permanent, frobots: :permanent],
-	      include_executables_for: [:unix],
-      	steps: [:assemble, &Bakeware.assemble/1],
+        include_executables_for: [:unix],
+        steps: [:assemble, &Bakeware.assemble/1],
         bakeware: [
           compression_level: 1,
           start_command: "daemon"
         ]
+      ],
+      client_tar: [
+        version: @version,
+        applications: [frobots_scenic: :permanent, frobots: :permanent],
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
       ]
     ]
   end

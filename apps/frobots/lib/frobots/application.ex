@@ -23,6 +23,7 @@ defmodule Frobots.Application do
       # todo right now, we just hardcode the channel in which the arena starts in. Will need to make this dynamically allocated once we parallize Arenas (match_id IS Arena ID)
       {Frobots.MatchChannelAdapter, []}
     ]
+
     Supervisor.start_link(children, strategy: :one_for_one, name: Frobots.Supervisor)
   end
 
@@ -32,6 +33,7 @@ defmodule Frobots.Application do
   def echo_token do
     client_token = Application.get_env(:frobots, :bearer_token)
     IO.inspect(client_token)
+
     if client_token == nil do
       exit("Exiting: No Client Token set")
     end
