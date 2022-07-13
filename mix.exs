@@ -50,7 +50,7 @@ defmodule Frobots.Umbrella.MixProject do
 
   defp releases do
     [
-      client: [
+      frobots_client_bin: [
         version: @version,
         applications: [frobots_scenic: :permanent, frobots: :permanent],
         include_executables_for: [:unix],
@@ -60,7 +60,7 @@ defmodule Frobots.Umbrella.MixProject do
           start_command: "daemon"
         ]
       ],
-      client_tar: [
+      frobots_client: [
         version: @version,
         applications: [frobots_scenic: :permanent, frobots: :permanent],
         include_executables_for: [:unix],
