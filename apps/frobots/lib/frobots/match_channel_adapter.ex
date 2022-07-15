@@ -17,8 +17,9 @@ defmodule Frobots.MatchChannelAdapter do
     GenServer.call(server, {:request_match})
   end
 
-  def start_match(server, frobots) do
-    GenServer.call(server, {:start_match, frobots})
+  def start_match(server, match_data) do
+    # todo we need to get the match details from the client!
+    GenServer.call(server, {:start_match, match_data})
   end
 
   defp nested_list_to_tuple(list) when is_list(list) do
@@ -62,9 +63,16 @@ defmodule Frobots.MatchChannelAdapter do
   end
 
   @impl true
-  def handle_call({:start_match, frobots}, _from, state) do
-    {:ok, frobots_map} = Channel.push(state.match_channel, "start_match", frobots)
-    {:reply, {:ok, frobots_map}, Map.put(state, :frobots_map, frobots_map)}
+  def handle_call({:start_match, match_data}, _from, state) do
+    IO.inspect(match_data)
+
+    case Channel.push(state.match_channel, "start_match", match_data) do
+      {:ok, frobots_map} ->
+        {:reply, {:ok, frobots_map}, Map.put(state, :frobots_map, frobots_map)}
+
+      {:error, error} ->
+        {:reply, {:error, error}, state}
+    end
   end
 
   @impl true
