@@ -1,15 +1,31 @@
 defmodule Frobots.ApiClient do
   use Tesla
 
-  plug(Tesla.Middleware.BaseUrl, "http://localhost:4000/api/v1")
+  plug(Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :api),:url))
   # generated this token from the server using jerry@frobots.io username.
   plug(Tesla.Middleware.BearerAuth,
     token: Application.get_env(:frobots, :bearer_token)
   )
-
   plug(Tesla.Middleware.JSON)
 
   @user_frobot_path Frobots.user_frobot_path()
+
+  # dynamic user & pass
+  def login_client(username, password, opts \\ %{}) do
+    Tesla.client [
+      {Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :token),:url) },
+      Tesla.Middleware.JSON,
+      {Tesla.Middleware.BasicAuth, Map.merge(%{username: username, password: password}, opts)}
+    ]
+  end
+
+  def get_token(client) do
+    # pass `client` argument to `Tesla.get` function
+    case Tesla.get(client, "/generate/") do
+      {:ok, %Tesla.Env{status: 200, body: %{"data"=>%{"token"=> token}}}} -> token
+      {:error, error} -> error
+    end
+  end
 
   def get_user_frobots() do
     # this gets only the users frobots

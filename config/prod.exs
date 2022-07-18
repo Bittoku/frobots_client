@@ -5,8 +5,11 @@ config :logger, level: :info
 
 config :phoenix_client,
   socket: [
-    url: "wss://frobots.io/socket/websocket"
+    url: "wss://beta.frobots.io/socket/websocket"
   ],
   api: [
-    url: "https://frobots.io/api/v1"
+    url: "https://beta.frobots.io/api/v1"
+  ],
+  token: [
+    url: "http://beta.frobots.io/token"
   ]

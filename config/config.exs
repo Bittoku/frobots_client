@@ -14,7 +14,10 @@ config :phoenix_client,
     url: "ws://localhost:4000/socket/websocket"
   ],
   api: [
-    url: "localhost:4000/api/v1"
+    url: "http://localhost:4000/api/v1"
+  ],
+  token: [
+    url: "http://localhost:4000/token"
   ]
 
 config :frobots, display_process_name: :arena_gui
