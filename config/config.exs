@@ -26,7 +26,7 @@ config :frobots, display_process_name: :arena_gui
 config :frobots_scenic, :viewport, %{
   name: :main_viewport,
   size: {1000, 1000},
-  default_scene: {FrobotsScenic.Scene.Start, FrobotsScenic.Scene.Game},
+  default_scene: {FrobotsScenic.Scene.Landing, FrobotsScenic.Scene.Start},
   drivers: [
     %{
       module: Scenic.Driver.Glfw,
