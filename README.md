@@ -20,7 +20,14 @@ You will see an API TOKEN. Copy this. You will need to set your ENV
 with this token in order to connect to the backend game simulator.
 
 # 3. Running the Client
-### Using the Binary
+
+## Dependencies
+The client uses the Scenic library for Elixir, which is a thin gui library for IoT interfaces, but works well for our purposes. 
+
+Install OpenGL dependencies
+https://hexdocs.pm/scenic/install_dependencies.html#content
+
+### Running the pre-built binary
 1. Download the latest release [here](https://github.com/Bittoku/frobots_client/tags]).
 2. Unzip the files and start a new terminal session in that directory.
 3. Set your token:
@@ -57,15 +64,3 @@ and create a .lua file.
     ```bash
    frobots_client<rel>/bin/frobots_client start
     ```
----
-# Troubleshooting
-1. You might need to install the libraries for the Scening to work:
-
-   For Ubuntu users:
-   ```bash
-   apt-get install pkgconf libglfw3 libglfw3-dev libglew2.1 libglew-dev
-   ```
-   For macOS users:
-   ```bash
-   brew install glfw3 glew pkg-config
-   ```

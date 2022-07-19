@@ -1,12 +1,6 @@
 defmodule Frobots.ApiClient do
   use Tesla
 
-  plug(Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :api),:url))
-  # generated this token from the server using jerry@frobots.io username.
-  plug(Tesla.Middleware.BearerAuth,
-    token: Application.get_env(:frobots, :bearer_token)
-  )
-  plug(Tesla.Middleware.JSON)
 
   @user_frobot_path Frobots.user_frobot_path()
 
@@ -22,14 +16,23 @@ defmodule Frobots.ApiClient do
   def get_token(client) do
     # pass `client` argument to `Tesla.get` function
     case Tesla.get(client, "/generate/") do
-      {:ok, %Tesla.Env{status: 200, body: %{"data"=>%{"token"=> token}}}} -> token
-      {:error, error} -> error
+      {:ok, %Tesla.Env{status: 200, body: %{"data"=>%{"token"=> token}}}} -> {:ok, token}
+      {:ok, %Tesla.Env{status: 401}} -> {:error, "Unauthorized"}
+      {_, error} -> {:error, error}
     end
+  end
+
+  def token_client() do
+    Tesla.client [
+      {Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :api), :url)},
+      Tesla.Middleware.JSON,
+      {Tesla.Middleware.BearerAuth, token: Application.get_env(:frobots, :bearer_token)}
+    ]
   end
 
   def get_user_frobots() do
     # this gets only the users frobots
-    case get("/frobots") do
+    case Tesla.get(token_client(), "/frobots") do
       {:ok, %Tesla.Env{body: %{"data" => frobot_list}}} ->
         Enum.map(frobot_list, fn frobot ->
           frobot
@@ -41,17 +44,13 @@ defmodule Frobots.ApiClient do
   end
 
   def get_template_frobots() do
-    case get("/frobots/templates") do
+    case Tesla.get(token_client(), "/frobots/templates") do
       {:ok, %Tesla.Env{body: %{"data" => frobot_list}}} ->
         Enum.map(frobot_list, fn frobot -> frobot end)
 
       {:error, error} ->
         [error]
     end
-  end
-
-  def get_users() do
-    get("/users")
   end
 
   def create_or_update_frobot(filename) do

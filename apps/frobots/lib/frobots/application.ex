@@ -34,8 +34,5 @@ defmodule Frobots.Application do
     client_token = Application.get_env(:frobots, :bearer_token)
     IO.inspect(client_token)
 
-    if client_token == nil do
-      exit("Exiting: No Client Token set")
-    end
   end
 end
