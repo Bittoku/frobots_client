@@ -33,6 +33,5 @@ defmodule Frobots.Application do
   def echo_token do
     client_token = Application.get_env(:frobots, :bearer_token)
     IO.inspect(client_token)
-
   end
 end
