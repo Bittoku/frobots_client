@@ -8,6 +8,7 @@ defmodule Frobots do
   """
   @app :frobots
   @priv_dir "#{:code.priv_dir(@app)}"
+  @home_dir "#{System.user_home!}"
   @bots_dir "bots"
   @template_dir "templates"
 
@@ -29,7 +30,7 @@ defmodule Frobots do
   """
 
   def user_frobot_path() do
-    Path.join([@priv_dir, @bots_dir])
+    Path.join([@home_dir, @bots_dir])
   end
 
   def template_frobot_path() do
@@ -57,6 +58,7 @@ defmodule Frobots do
   # this loads the frobots from server and saves them to the directory
   def load_player_frobots() do
     frobots = ApiClient.get_user_frobots()
+              |> Enum.filter(fn f -> f["Class"] == "U" end)
 
     Enum.each(frobots, fn f ->
       ConCache.put(:frobots, f["name"], f["id"])
