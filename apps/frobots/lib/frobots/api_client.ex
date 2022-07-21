@@ -1,33 +1,34 @@
 defmodule Frobots.ApiClient do
   use Tesla
 
-
   @user_frobot_path Frobots.user_frobot_path()
 
   # dynamic user & pass
   def login_client(username, password, opts \\ %{}) do
-    Tesla.client [
-      {Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :token),:url) },
+    Tesla.client([
+      {Tesla.Middleware.BaseUrl,
+       Keyword.fetch!(Application.get_env(:phoenix_client, :token), :url)},
       Tesla.Middleware.JSON,
       {Tesla.Middleware.BasicAuth, Map.merge(%{username: username, password: password}, opts)}
-    ]
+    ])
   end
 
   def get_token(client) do
     # pass `client` argument to `Tesla.get` function
     case Tesla.get(client, "/generate/") do
-      {:ok, %Tesla.Env{status: 200, body: %{"data"=>%{"token"=> token}}}} -> {:ok, token}
+      {:ok, %Tesla.Env{status: 200, body: %{"data" => %{"token" => token}}}} -> {:ok, token}
       {:ok, %Tesla.Env{status: 401}} -> {:error, "Unauthorized"}
       {_, error} -> {:error, error}
     end
   end
 
   def token_client() do
-    Tesla.client [
-      {Tesla.Middleware.BaseUrl, Keyword.fetch!(Application.get_env(:phoenix_client, :api), :url)},
+    Tesla.client([
+      {Tesla.Middleware.BaseUrl,
+       Keyword.fetch!(Application.get_env(:phoenix_client, :api), :url)},
       Tesla.Middleware.JSON,
       {Tesla.Middleware.BearerAuth, token: Application.get_env(:frobots, :bearer_token)}
-    ]
+    ])
   end
 
   def get_user_frobots() do
@@ -61,12 +62,12 @@ defmodule Frobots.ApiClient do
     case ConCache.get(:frobots, name) do
       nil ->
         request_body = %{frobot: %{brain_code: code, name: name, class: "U"}}
-        IO.inspect Tesla.post(token_client(), path, request_body)
+        IO.inspect(Tesla.post(token_client(), path, request_body))
 
       id ->
         update_path = path <> "/" <> Integer.to_string(id)
         request_body = %{frobot: %{brain_code: code}}
-        IO.inspect Tesla.put(token_client(), update_path, request_body)
+        IO.inspect(Tesla.put(token_client(), update_path, request_body))
     end
   end
 
