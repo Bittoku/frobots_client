@@ -61,12 +61,12 @@ defmodule Frobots.ApiClient do
     case ConCache.get(:frobots, name) do
       nil ->
         request_body = %{frobot: %{brain_code: code, name: name, class: "U"}}
-        post(path, request_body)
+        IO.inspect Tesla.post(token_client(), path, request_body)
 
       id ->
         update_path = path <> "/" <> Integer.to_string(id)
         request_body = %{frobot: %{brain_code: code}}
-        put(update_path, request_body)
+        IO.inspect Tesla.put(token_client(), update_path, request_body)
     end
   end
 
@@ -79,6 +79,6 @@ defmodule Frobots.ApiClient do
 
   def delete_frobot(id) do
     path = "/frobots" <> "/" <> Integer.to_string(id)
-    delete(path)
+    Tesla.delete(token_client(), path)
   end
 end
